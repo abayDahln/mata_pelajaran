@@ -11,30 +11,19 @@ if ($_SERVER['REQUEST_METHOD'] == "PUT"){
             $data = $mapel->fetch_assoc();
             if ($data != null){
                 $input = json_decode(file_get_contents("php://input"));
-                $name = $input->name;
-                $deskripsi = $input->deskripsi;
-                $guru = $input->guru;
+                
+                if (isset($input) && !empty($input->name) && !empty($input->deskripsi) && !empty($input->guru)){
+                    $name = $input->name;
+                    $deskripsi = $input->deskripsi;
+                    $guru = $input->guru;
+                    $mapel = $connect->query("UPDATE mata_pelajaran SET name = '$name', deskripsi = '$deskripsi', guru = '$guru' WHERE id = '$id'");
 
-                if (isset($input)){
-                    if ($name != null && $deskripsi != null && $guru != null){
-                        $mapel = $connect->query("UPDATE mata_pelajaran SET name = '$name', deskripsi = '$deskripsi', guru = '$guru' WHERE id = '$id'");
+                    http_response_code(201);
 
-                        http_response_code(201);
-
-                        $array = [
-                            'status' => 201,
-                            'message' => 'success update data'
-                        ];
-
-                    }
-                    else {
-                        http_response_code(400);
-
-                        $array = [
-                            'status' => 400,
-                            'message' => 'bad request'
-                        ];       
-                    }
+                    $array = [
+                        'status' => 201,
+                        'message' => 'success update data'
+                    ];
                 }
                 else {
                     http_response_code(400);
